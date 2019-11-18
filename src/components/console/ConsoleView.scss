@@ -1,0 +1,19 @@
+.ConsoleView {
+    height: 40vh;
+    padding: 0px;
+
+    input {
+        width: calc(100% - 45px) !important;
+        margin-right: 5px;
+    }
+
+}
+
+.LogView {
+    height: calc(40vh - 40px);
+    overflow-y: scroll;
+
+    p {
+        margin-bottom: 5px;
+    }
+}
