@@ -25,8 +25,6 @@ export default function reducer(state: State = initialState, action: Actions): S
             return {
                 ...action.history
             };
-        case ActionTypeNames.ClearHistory:
-            return initialState;
         default:
             return state;
     }

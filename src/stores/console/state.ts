@@ -6,4 +6,5 @@ export default interface State {
 export interface LogLine {
     line: string;
     isInput: boolean;
+    isError: boolean;
 }

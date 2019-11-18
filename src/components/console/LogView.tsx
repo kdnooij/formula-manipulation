@@ -12,13 +12,27 @@ class LogView extends React.Component<Props> {
     public render() {
         return (
             <div className="LogView">
-                {this.props.lines.map((line, index) => (
-                    <p key={index}>
-                        <code  className={line.isInput ? 'input' : ''}>
-                            {(line.isInput ? '> ' : '') + line.line}
-                        </code>
-                    </p>
-                ))}
+                {this.props.lines.map((line, index) => {
+                    if (line.isInput) {
+                        return (
+                            <p key={index}>
+                                <code className="input">
+                                    {'> ' + line.line}
+                                </code>
+                            </p>
+                        );
+                    } else {
+                        if (line.isError) {
+                            return (
+                                <p key={index}><code className="error">{line.line}</code></p>
+                            );
+                        } else {
+                            return (
+                                <p key={index}><code className="output">{line.line}</code></p>
+                            );
+                        }
+                    }
+                })}
             </div>
         );
     }

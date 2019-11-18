@@ -1,13 +1,14 @@
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faArrowRight, faRedo, faTrashAlt, faUndo } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import { faUndo, faRedo, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 library.add({
     faArrowRight,
     faRedo,
+    faTrashAlt,
     faUndo,
 });
 

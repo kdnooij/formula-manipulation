@@ -2,12 +2,12 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 // tslint:disable-next-line:no-submodule-imports
-import { all } from 'redux-saga/effects';
+import { all, fork } from 'redux-saga/effects';
 
 import consoleReducer from './console/reducer';
 // import formulaReducer from './formula/reducer';
 
-import consoleSagas from './console/sagas';
+import consoleSagas, { loadHistory } from './console/sagas';
 // import formulaSagas from './formula/sagas';
 
 // Import all watching sagas
@@ -27,7 +27,7 @@ export type RootState = {
 
 function* rootSaga() {
     // initialize data
-    // yield fork(...);
+    yield fork(loadHistory);
 
     yield all(watchSagas.map((saga) => saga()));
 }

@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import $ from 'jquery';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Input } from 'reactstrap';
@@ -28,13 +29,30 @@ class ConsoleInput extends React.Component<Props, State> {
 
     public render() {
         return (
-                <Form inline={true}>
-                    <Input value={this.state.input} onChange={this.handleInputChange} />
-                    <Button onClick={() => this.props.executeInput(this.state.input)}>
-                        <FontAwesomeIcon icon="arrow-right" />
-                    </Button>
-                </Form>
+            <Form inline={true} onSubmit={(e) => { e.preventDefault(); this.execute(); }}>
+                <Input value={this.state.input} onChange={this.handleInputChange} />
+                <Button onClick={this.execute}>
+                    <FontAwesomeIcon icon="arrow-right" />
+                </Button>
+            </Form>
         );
+    }
+
+    public componentDidUpdate() {
+        // Scroll to bottom
+        const d = $('.LogView');
+        d.scrollTop(d.prop('scrollHeight'));
+    }
+
+    public componentDidMount() {
+        // Scroll to bottom
+        const d = $('.LogView');
+        d.scrollTop(d.prop('scrollHeight'));
+    }
+
+    private execute = () => {
+        this.props.executeInput(this.state.input);
+        this.setState({ input: '' });
     }
 
     private handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
