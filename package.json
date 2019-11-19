@@ -15,7 +15,12 @@
     "@types/reactstrap": "^8.0.6",
     "@types/redux": "^3.6.0",
     "@types/redux-saga": "^0.10.5",
+    "antlr4ts": "^0.5.0-alpha.3",
+    "antlr4ts-cli": "^0.5.0-alpha.3",
     "bootstrap": "^4.3.1",
+    "chokidar": "^3.3.0",
+    "chokidar-cli": "^2.1.0",
+    "d3-hierarchy": "^1.1.9",
     "jquery": "^3.4.1",
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
@@ -35,7 +40,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch-antlr": "chokidar \"**/*.g4\" -c \"npm run antlr4ts\"",
+    "antlr4ts": "antlr4ts -o src/parsing/generated/ -visitor src/parsing/grammars/Expression.g4"
   },
   "eslintConfig": {
     "extends": "react-app"

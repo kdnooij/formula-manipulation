@@ -5,18 +5,18 @@ import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
 
 import consoleReducer from './console/reducer';
-// import formulaReducer from './formula/reducer';
+import treeReducer from './tree/reducer';
 
-import consoleSagas, { loadHistory } from './console/sagas';
-// import formulaSagas from './formula/sagas';
+import consoleSagas, { loadHistory as loadConsoleHistory } from './console/sagas';
+import treeSagas, { loadHistory as loadTreeHistory } from './tree/sagas';
 
 // Import all watching sagas
-const watchSagas = [...consoleSagas];
+const watchSagas = [...consoleSagas, ...treeSagas];
 
 // Set up root reducer
 const reducers = {
     console: consoleReducer,
-    // formula: formulaReducer,
+    tree: treeReducer,
 };
 
 const rootReducer = combineReducers(reducers);
@@ -27,7 +27,8 @@ export type RootState = {
 
 function* rootSaga() {
     // initialize data
-    yield fork(loadHistory);
+    yield fork(loadConsoleHistory);
+    yield fork(loadTreeHistory);
 
     yield all(watchSagas.map((saga) => saga()));
 }

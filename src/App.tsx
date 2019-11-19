@@ -4,7 +4,7 @@ import './App.scss';
 import Topbar from './components/top/Topbar';
 
 import ConsoleView from './components/console/ConsoleView';
-import FormulaView from './components/formula/FormulaView';
+import TreeView from './components/tree/TreeView';
 import { addToLog } from './stores/console/actionCreators';
 import store from './stores/store';
 
@@ -24,7 +24,7 @@ export default class App extends React.Component {
             <Provider store={store}>
                 <React.Fragment>
                     <Topbar><h3>Test</h3></Topbar>
-                    <FormulaView />
+                    <TreeView />
                     <ConsoleView />
                 </React.Fragment>
             </Provider>
