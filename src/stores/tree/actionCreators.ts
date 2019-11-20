@@ -1,4 +1,4 @@
-import { FileContext } from '../../parsing/generated/ExpressionParser';
+import { ASTNode } from '../../parsing/nodes/node';
 import {
     ActionTypeNames,
     AddToHistoryAction, ClearHistoryAction,
@@ -6,7 +6,7 @@ import {
 } from './actions';
 import State from './state';
 
-export function updateTree(tree: FileContext, ruleNames: string[]): UpdateTreeAction {
+export function updateTree(tree: ASTNode[], ruleNames: string[]): UpdateTreeAction {
     return {
         ruleNames,
         tree,
@@ -14,7 +14,7 @@ export function updateTree(tree: FileContext, ruleNames: string[]): UpdateTreeAc
     };
 }
 
-export function addToHistory(tree: FileContext, ruleNames: string[]): AddToHistoryAction {
+export function addToHistory(tree: ASTNode[], ruleNames: string[]): AddToHistoryAction {
     return {
         ruleNames,
         tree,

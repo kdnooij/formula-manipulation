@@ -20,6 +20,16 @@ export default function reducer(state: State = initialState, action: Actions): S
             return {
                 ...action.history
             };
+        case ActionTypeNames.Undo:
+            return {
+                ...state,
+                index: state.index - 1
+            };
+        case ActionTypeNames.Redo:
+            return {
+                ...state,
+                index: state.index + 1
+            };
         default:
             return state;
     }

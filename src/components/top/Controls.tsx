@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Form } from 'reactstrap';
 import { Dispatch } from 'redux';
 import { RootState } from '../../stores/store';
+import { redo, undo } from '../../stores/tree/actionCreators';
+import { canRedo, canUndo } from '../../stores/tree/selectors';
 import TopbarButton from './TopbarButton';
 
 interface Props {
@@ -41,13 +43,13 @@ class Controls extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    canRedo: true, // canRedo(state)
-    canUndo: true, // canUndo(state),
+    canRedo: canRedo(state),
+    canUndo: canUndo(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    redo: () => null, // dispatch(redo()),
-    undo: () => null, // dispatch(undo()),
+    redo: () => dispatch(redo()),
+    undo: () => dispatch(undo()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Controls);

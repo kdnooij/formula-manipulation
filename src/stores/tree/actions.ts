@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { FileContext } from '../../parsing/generated/ExpressionParser';
+import { ASTNode } from '../../parsing/nodes/node';
 import State from './state';
 
 export enum ActionTypeNames {
@@ -14,12 +15,12 @@ export enum ActionTypeNames {
 }
 
 export type UpdateTreeAction = Action<ActionTypeNames.UpdateTree> & {
-    tree: FileContext;
+    tree: ASTNode[];
     ruleNames: string[];
 };
 
 export type AddToHistoryAction = Action<ActionTypeNames.AddToHistory> & {
-    tree: FileContext;
+    tree: ASTNode[];
     ruleNames: string[];
 };
 

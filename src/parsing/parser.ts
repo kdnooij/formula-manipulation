@@ -1,6 +1,7 @@
 import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
 import { ExpressionLexer } from './generated/ExpressionLexer';
 import { ExpressionParser, FileContext } from './generated/ExpressionParser';
+import { ASTVisitor } from './visitor';
 
 export class Parser {
 
@@ -14,7 +15,7 @@ export class Parser {
         this._lexer = new ExpressionLexer(inputStream);
         const tokenStream = new CommonTokenStream(this._lexer);
         this._parser = new ExpressionParser(tokenStream);
-    
+
         // Parse the input, where `compilationUnit` is whatever entry point you defined
         this._tree = this._parser.file();
     }
@@ -24,7 +25,8 @@ export class Parser {
     }
 
     public getTree() {
-        return this._tree;
+        const visitor = new ASTVisitor();
+        return visitor.visit(this._tree);
     }
 
     public getRuleNames() {
