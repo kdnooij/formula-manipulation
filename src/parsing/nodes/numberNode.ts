@@ -6,5 +6,6 @@ export class ASTNumberNode extends ASTNode {
     constructor(value: number) {
         super(ASTType.variable, undefined);
         this.value = value;
+        this.name = value.toString();
     }
 }

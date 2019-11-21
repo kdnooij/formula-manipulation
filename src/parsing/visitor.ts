@@ -7,12 +7,12 @@ import {
     FileContext, RelopContext, ScientificContext, VariableContext
 } from './generated/ExpressionParser';
 import { ExpressionVisitor } from './generated/ExpressionVisitor';
-import { ASTNode } from './nodes/node';
+import { ASTExpressionNode, ASTOperator } from './nodes/expressionNode';
+import { ASTNode, ASTType } from './nodes/node';
 import { ASTNullNode } from './nodes/nullNode';
 import { ASTNumberNode } from './nodes/numberNode';
 import { ASTSymbolNode } from './nodes/symbolNode';
 import { ASTVariableNode } from './nodes/variableNode';
-import { ASTExpressionNode, ASTOperator } from './nodes/expressionNode';
 
 export class ASTVisitor
     extends AbstractParseTreeVisitor<ASTNode[]>
@@ -46,8 +46,13 @@ export class ASTVisitor
                 return children;
             }
         } */
-
-        return [new ASTExpressionNode(ASTOperator.plus, children)];
+        // if (children.length === 1) {
+        return [new ASTExpressionNode(ASTOperator.id, children)];
+        // } else if (children.length === 2) {
+        //     if (children[0].type === ASTType.symbol) {
+        //         switch(children[0].type.)
+        //     }
+        // }
     }
 
     public visitEquation(context: EquationContext): ASTNode[] {

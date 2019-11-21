@@ -1,6 +1,7 @@
 import { ASTNode, ASTType } from './node';
 
 export enum ASTOperator {
+    id = 'id',
     plus = '+',
     minus = '-',
     mul = '*',

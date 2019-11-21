@@ -1,13 +1,14 @@
 import { Parser } from '../parsing/parser';
-import { clearHistory } from '../stores/console/actionCreators';
+import { clearHistory as clearConsoleHistory } from '../stores/console/actionCreators';
 import store from '../stores/store';
-import { updateTree } from '../stores/tree/actionCreators';
+import { clearHistory as clearTreeHistory, updateTree } from '../stores/tree/actionCreators';
 
 export function execute(input: string): { output: string, error?: string } | undefined {
     const tokens = input.split(' ');
     switch (tokens[0]) {
         case '/clear':
-            store.dispatch(clearHistory());
+            store.dispatch(clearConsoleHistory());
+            store.dispatch(clearTreeHistory());
             return;
         case '/parse':
             const parser = new Parser(tokens.slice(1).join(' '));
