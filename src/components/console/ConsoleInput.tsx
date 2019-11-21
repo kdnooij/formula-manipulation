@@ -16,6 +16,8 @@ interface Props {
 
 interface State {
     input: string;
+    cycleIndex: number;
+    tempInput?: string;
 }
 
 class ConsoleInput extends React.Component<Props, State> {
@@ -23,6 +25,7 @@ class ConsoleInput extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            cycleIndex: -1,
             input: '',
         };
     }
@@ -30,7 +33,7 @@ class ConsoleInput extends React.Component<Props, State> {
     public render() {
         return (
             <Form inline={true} onSubmit={(e) => { e.preventDefault(); this.execute(); }}>
-                <Input value={this.state.input} onChange={this.handleInputChange} />
+                <Input value={this.state.input} onChange={this.handleInputChange} onKeyDown={this.cycle} />
                 <Button onClick={this.execute}>
                     <FontAwesomeIcon icon="arrow-right" />
                 </Button>
@@ -50,6 +53,55 @@ class ConsoleInput extends React.Component<Props, State> {
         d.scrollTop(d.prop('scrollHeight'));
     }
 
+    private cycle = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'ArrowUp') {
+            if (this.state.cycleIndex === -1) {
+                const index = this.props.inputHistory.length - 1;
+                if (index > -1) {
+                    this.setState({
+                        cycleIndex: index,
+                        input: this.props.inputHistory[index],
+                        tempInput: this.state.input,
+                    });
+                }
+            } else if (this.state.cycleIndex === 0) {
+                const index = this.props.inputHistory.length - 1;
+                this.setState({
+                    cycleIndex: -1,
+                    input: this.state.tempInput || '',
+                });
+            } else {
+                const index = this.state.cycleIndex - 1;
+                this.setState({
+                    cycleIndex: index,
+                    input: this.props.inputHistory[index],
+                });
+            }
+        } else if (e.key === 'ArrowDown') {
+            if (this.state.cycleIndex === -1) {
+                const index = 0;
+                if (this.props.inputHistory.length > 0) {
+                    this.setState({
+                        cycleIndex: index,
+                        input: this.props.inputHistory[index],
+                        tempInput: this.state.input,
+                    });
+                }
+            } else if (this.state.cycleIndex === this.props.inputHistory.length - 1) {
+                this.setState({
+                    cycleIndex: -1,
+                    input: this.state.tempInput || '',
+                });
+            } else {
+                const index = this.state.cycleIndex + 1;
+                this.setState({
+                    cycleIndex: index,
+                    input: this.props.inputHistory[index],
+                });
+            }
+        }
+    }
+
     private execute = () => {
         this.props.executeInput(this.state.input);
         this.setState({ input: '' });
@@ -57,7 +109,9 @@ class ConsoleInput extends React.Component<Props, State> {
 
     private handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            input: event.target.value
+            cycleIndex: -1,
+            input: event.target.value,
+            tempInput: undefined,
         });
     }
 }

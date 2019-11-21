@@ -1,3 +1,4 @@
+import { ParserError } from '../parsing/errorListener';
 import { Parser } from '../parsing/parser';
 import { clearHistory as clearConsoleHistory } from '../stores/console/actionCreators';
 import store from '../stores/store';
@@ -11,9 +12,13 @@ export function execute(input: string): { output: string, error?: string } | und
             store.dispatch(clearTreeHistory());
             return;
         case '/parse':
-            const parser = new Parser(tokens.slice(1).join(' '));
-            store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
-            return { output: 'parsed: ' + parser.toString() };
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
+                return { output: 'parsed: ' + parser.toString() };
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };
     }

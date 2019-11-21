@@ -2,7 +2,7 @@
 import { all, call, put, putResolve, select, takeEvery } from 'redux-saga/effects';
 import * as consoleCache from '../../cache/consoleCache';
 import * as inputHandler from '../../inputHandling/inputHandler';
-import { addToLog, saveHistory as saveHistoryAction, setHistory } from './actionCreators';
+import { addToInputHistory, addToLog, saveHistory as saveHistoryAction, setHistory } from './actionCreators';
 import { ActionTypeNames, ExecuteInputAction } from './actions';
 import { getInputHistory, getLines } from './selectors';
 
@@ -11,8 +11,12 @@ function* watchExecuteInput() {
 }
 
 function* executeInput(action: ExecuteInputAction) {
-    yield putResolve(addToLog({ isInput: true, line: action.input, isError: false }));
-    const res: {output: string, error?: string} | undefined = yield call(inputHandler.execute, action.input);
+    yield all([
+        putResolve(addToLog({ isInput: true, line: action.input, isError: false })),
+        putResolve(addToInputHistory(action.input))
+    ]);
+
+    const res: { output: string, error?: string } | undefined = yield call(inputHandler.execute, action.input);
 
     if (res) {
         const { output, error } = res;

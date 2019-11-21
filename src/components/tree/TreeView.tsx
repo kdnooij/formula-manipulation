@@ -24,22 +24,29 @@ class TreeView extends React.Component<Props> {
     } */
 
     private svg?: d3.Selection<SVGSVGElement | null, unknown, null, undefined>;
-    private width = 900;
+    private width = 1100;
     public render() {
         return (
             <Container fluid={true} className="TreeView">
-                <div>
-                    <svg
-                        ref={(element) => this.svg = d3.select(element)}
-                        width={900}
-                        height={400}
-                    />
-                </div>
+                <svg
+                    ref={(element) => this.svg = d3.select(element)}
+                    width={'100%'}
+                    height={'100%'}
+                />
             </Container>
         );
     }
 
     public componentDidUpdate() {
+        if (this.props.tree) {
+            this.svg!.select('g').remove();
+            this.chart(this.props.tree.tree[0]);
+        } else {
+            this.svg!.select('g').remove();
+        }
+    }
+
+    public componentDidMount() {
         if (this.props.tree) {
             this.svg!.select('g').remove();
             this.chart(this.props.tree.tree[0]);
