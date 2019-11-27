@@ -20,7 +20,7 @@ export function printNode(node: NodeType): string {
         case ASTType.power:
             if (node.children) {
                 return '(' + printNode(node.children[0] as NodeType) + '^' +
-                    printNode(node.children[2] as NodeType) + ')';
+                    printNode(node.children[1] as NodeType) + ')';
             } else {
                 return node.name;
             }
