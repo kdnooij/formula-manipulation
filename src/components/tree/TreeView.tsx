@@ -3,6 +3,8 @@ import { hierarchy } from 'd3-hierarchy';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
+import { printNode } from '../../engine/printing';
+import { NodeType } from '../../engine/simplification';
 import { FileContext } from '../../parsing/generated/ExpressionParser';
 import { ASTNode } from '../../parsing/nodes/node';
 import { RootState } from '../../stores/store';
@@ -27,13 +29,20 @@ class TreeView extends React.Component<Props> {
     private width = 1100;
     public render() {
         return (
-            <Container fluid={true} className="TreeView">
-                <svg
-                    ref={(element) => this.svg = d3.select(element)}
-                    width={'100%'}
-                    height={'100%'}
-                />
-            </Container>
+            <React.Fragment>
+                <Container fluid={true} className="TreeView">
+                    <svg
+                        ref={(element) => this.svg = d3.select(element)}
+                        width={'100%'}
+                    />
+                    {this.props.tree ? (
+                        <span className="StringView">
+                            {printNode(this.props.tree.tree[0] as NodeType)}
+                        </span>
+                    ) : null}
+                </Container>
+                
+            </React.Fragment>
         );
     }
 

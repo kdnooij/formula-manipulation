@@ -1,7 +1,21 @@
 .TreeView {
     height: calc(50vh - 57px);
-    border-bottom: solid 1px #ccc;
     padding: 20px;
     margin: 0px;
     overflow: hidden;
+
+    svg {
+        height: calc(100%);
+    }
+
+    .StringView {
+        padding: 5px 10px;
+        margin-left: 50%;
+        margin-top: -10px;
+        border-radius: 4px;
+        transform: translate(-50%, -100%);
+        background-color: #eee;
+        float: left;
+    }
 }
+

@@ -1,3 +1,4 @@
+import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { ParserError } from '../parsing/errorListener';
 import { Parser } from '../parsing/parser';
@@ -28,8 +29,10 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
+                return { output: 'Simplified to: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to simplify` };
             }
-            return { output: 'Simplified' };
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };
     }
