@@ -2,6 +2,7 @@
   "name": "formula-manipulation",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kdnooij.github.io/formula_manipulation/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
@@ -25,6 +26,7 @@
     "chokidar-cli": "^2.1.0",
     "d3": "^5.14.2",
     "d3-hierarchy": "^1.1.9",
+    "gh-pages": "^2.1.1",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.0",
@@ -47,7 +49,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "watch-antlr": "chokidar \"**/*.g4\" -c \"npm run antlr4ts\"",
-    "antlr4ts": "antlr4ts -o src/parsing/generated/ -visitor src/parsing/grammars/Expression.g4"
+    "antlr4ts": "antlr4ts -o src/parsing/generated/ -visitor src/parsing/grammars/Expression.g4",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
