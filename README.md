@@ -1,44 +1,31 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Using the Parsing Tool
 
-## Available Scripts
+## Updating the project
 
-In the project directory, you can run:
+1. To update the project, open GitHub for Desktop
+2. Select the correct repository (formula-manipulation)
+3. Click 'Fetch origin' at the top and let it load the changes
+4. Now Click 'Pull' at the top. The project should now be up to date
 
-### `npm start`
+## Running
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Open the project directory in Visual Studio Code.
+2. Use <kbd>Ctrl+`</kbd> to open the Terminal at the bottom.
+3. Run `npm start` to start the tool, after a while a browser window will open.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Installing dependencies
 
-### `npm test`
+1. If `npm start` results in an error, it is likely that a new dependency is added to the project.
+2. To fix this run `npm install`.
+3. After this try `npm start` again.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Stopping the tool
 
-### `npm run build`
+1. To stop the tool from running, make sure the terminal is focussed and press <kbd>Ctrl+C</kbd>
+2. Now type `Y` and press <kbd>Enter</kbd>
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Error: Something is already running on port 3000
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. If you get this warning when starting the tool, press <kbd>Ctrl+C</kbd> and `Y`+<kbd>Enter</kbd> to close it.
+2. Now go into your task manager and close all Node.js or node.exe programs.
+3. Try running the tool again.
