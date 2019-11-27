@@ -8,11 +8,9 @@ export enum ASTType {
 
 export abstract class ASTNode {
     public name: string;
-    public type: ASTType;
     public children?: ASTNode[];
 
-    constructor(type: ASTType, children?: ASTNode[]) {
-        this.type = type;
+    constructor(type: string, children?: ASTNode[]) {
         this.children = children;
         this.name = type;
     }

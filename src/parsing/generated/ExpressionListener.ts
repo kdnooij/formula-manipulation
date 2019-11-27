@@ -4,7 +4,6 @@
 import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
 
 import { FileContext } from "./ExpressionParser";
-import { EquationContext } from "./ExpressionParser";
 import { ExpressionContext } from "./ExpressionParser";
 import { AtomContext } from "./ExpressionParser";
 import { ScientificContext } from "./ExpressionParser";
@@ -27,17 +26,6 @@ export interface ExpressionListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitFile?: (ctx: FileContext) => void;
-
-	/**
-	 * Enter a parse tree produced by `ExpressionParser.equation`.
-	 * @param ctx the parse tree
-	 */
-	enterEquation?: (ctx: EquationContext) => void;
-	/**
-	 * Exit a parse tree produced by `ExpressionParser.equation`.
-	 * @param ctx the parse tree
-	 */
-	exitEquation?: (ctx: EquationContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `ExpressionParser.expression`.

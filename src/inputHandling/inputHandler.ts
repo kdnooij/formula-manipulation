@@ -1,8 +1,10 @@
+import { NodeType, simplifyInput } from '../engine/simplification';
 import { ParserError } from '../parsing/errorListener';
 import { Parser } from '../parsing/parser';
 import { clearHistory as clearConsoleHistory } from '../stores/console/actionCreators';
 import store from '../stores/store';
 import { clearHistory as clearTreeHistory, updateTree } from '../stores/tree/actionCreators';
+import { getTree } from '../stores/tree/selectors';
 
 export function execute(input: string): { output: string, error?: string } | undefined {
     const tokens = input.split(' ');
@@ -19,6 +21,15 @@ export function execute(input: string): { output: string, error?: string } | und
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
             }
+        case '/simplify':
+            const tree = getTree(store.getState());
+            if (tree) {
+                const newTree = simplifyInput(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+            }
+            return { output: 'Simplified' };
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };
     }

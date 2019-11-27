@@ -4,7 +4,6 @@
 import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
 
 import { FileContext } from "./ExpressionParser";
-import { EquationContext } from "./ExpressionParser";
 import { ExpressionContext } from "./ExpressionParser";
 import { AtomContext } from "./ExpressionParser";
 import { ScientificContext } from "./ExpressionParser";
@@ -26,13 +25,6 @@ export interface ExpressionVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @return the visitor result
 	 */
 	visitFile?: (ctx: FileContext) => Result;
-
-	/**
-	 * Visit a parse tree produced by `ExpressionParser.equation`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitEquation?: (ctx: EquationContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `ExpressionParser.expression`.

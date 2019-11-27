@@ -1,11 +1,6 @@
 grammar Expression;
 
-file : equation* EOF;
-
-equation
-   : expression relop expression
-   | expression
-   ;
+file : expression EOF;
 
 expression
    :  expression  POW expression

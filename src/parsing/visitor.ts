@@ -3,7 +3,7 @@ import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor
 // tslint:disable-next-line:no-submodule-imports
 import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 import {
-    AtomContext, EquationContext, ExpressionContext,
+    AtomContext, ExpressionContext,
     FileContext, RelopContext, ScientificContext, VariableContext
 } from './generated/ExpressionParser';
 import { ExpressionVisitor } from './generated/ExpressionVisitor';
@@ -54,11 +54,7 @@ export class ASTVisitor
         //     }
         // }
     }
-
-    public visitEquation(context: EquationContext): ASTNode[] {
-        return super.visitChildren(context);
-    }
-
+    
     public visitFile(context: FileContext): ASTNode[] {
         return super.visitChildren(context);
     }
