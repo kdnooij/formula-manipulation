@@ -7,7 +7,8 @@ expression
    |  expression  (TIMES | DIV)  expression
    |  expression  (PLUS | MINUS) expression
    |  LPAREN expression RPAREN
-   |  (PLUS | MINUS)* atom
+   |  PLUS | MINUS atom
+   |  atom
    ;
 
 atom

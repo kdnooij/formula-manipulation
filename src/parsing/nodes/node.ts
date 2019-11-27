@@ -3,7 +3,10 @@ export enum ASTType {
     expression = 'expression',
     number = 'number',
     variable = 'variable',
-    symbol = 'symbol'
+    symbol = 'symbol',
+    summation = 'summation',
+    product = 'product',
+    power = 'power',
 }
 
 export abstract class ASTNode {
