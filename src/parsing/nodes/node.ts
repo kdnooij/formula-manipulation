@@ -11,10 +11,8 @@ export enum ASTType {
 
 export abstract class ASTNode {
     public name: string;
-    public children?: ASTNode[];
 
-    constructor(type: string, children?: ASTNode[]) {
-        this.children = children;
+    constructor(type: string) {
         this.name = type;
     }
 }

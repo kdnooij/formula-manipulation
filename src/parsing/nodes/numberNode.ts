@@ -5,7 +5,7 @@ export class ASTNumberNode extends ASTNode {
     public type: ASTType.number = ASTType.number;
     
     constructor(value: number) {
-        super(ASTType.variable, undefined);
+        super(ASTType.variable);
         this.value = value;
         this.name = value.toString();
     }

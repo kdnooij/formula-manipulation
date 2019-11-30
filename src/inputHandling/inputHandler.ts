@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import { applyAssociative } from '../engine/assocative';
+import { removeIdentities } from '../engine/identity';
 import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { ParserError } from '../parsing/errorListener';
@@ -22,8 +25,8 @@ export function execute(input: string): { output: string, error?: string } | und
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
             }
-        case '/simplify':
-            const tree = getTree(store.getState());
+        case '/simplify': {
+            const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
                 const newTree = simplifyInput(tree.tree[0] as NodeType);
                 if (newTree) {
@@ -33,6 +36,31 @@ export function execute(input: string): { output: string, error?: string } | und
             } else {
                 return { output: '', error: `Nothing to simplify` };
             }
+        }
+        case '/associative': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = applyAssociative(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/identity': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = removeIdentities(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };
     }

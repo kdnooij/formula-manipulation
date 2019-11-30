@@ -5,7 +5,7 @@ export class ASTSymbolNode extends ASTNode {
     public type: ASTType.symbol = ASTType.symbol;
 
     constructor(symbol: string) {
-        super(ASTType.symbol, undefined);
+        super(ASTType.symbol);
         this.symbol = symbol;
         this.name = symbol;
     }

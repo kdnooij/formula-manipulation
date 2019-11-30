@@ -8,12 +8,15 @@ export enum ASTOperator {
     div = '/',
     pow = '^'
 }
+
 export class ASTExpressionNode extends ASTNode {
     public operator: ASTOperator;
     public type: ASTType.expression = ASTType.expression;
-    
+    public children: ASTNode[];
+
     public constructor(operator: ASTOperator, children: ASTNode[]) {
-        super(ASTType.expression, children);
+        super(ASTType.expression);
+        this.children = children;
         this.operator = operator;
     }
 

@@ -5,7 +5,7 @@ export class ASTVariableNode extends ASTNode {
     public type: ASTType.variable = ASTType.variable;
 
     constructor(variable: string) {
-        super(ASTType.variable, undefined);
+        super(ASTType.variable);
         this.variable = variable;
         this.name = variable;
     }
