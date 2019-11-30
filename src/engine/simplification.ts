@@ -63,7 +63,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
 
         if (node.children.length === 2) {
             const children = node.children as NodeType[];
-            // (+ | -) exp
+            // Unary Rule
             node.children = _.compact([
                 sI(new ASTNumberNode(0)),
                 children[0],
@@ -87,7 +87,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
                             sI(children[0]),
                             sI(children[2]),
                         ])));
-                    case '-':
+                    case '-': // Difference rule
                         return sI(new ASTSummationNode(_.compact([
                             sI(node.children[0] as NodeType),
                             sI(new ASTProductNode(_.compact([
@@ -100,7 +100,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
                             simplifyInput(children[0]),
                             simplifyInput(children[2]),
                         ])));
-                    case '/':
+                    case '/': // Quotient rule
                         return sI(new ASTProductNode(_.compact([
                             sI(node.children[0] as NodeType),
                             sI(new ASTPowerNode(_.compact([

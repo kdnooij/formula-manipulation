@@ -41,7 +41,7 @@ class TreeView extends React.Component<Props> {
                         </span>
                     ) : null}
                 </Container>
-                
+
             </React.Fragment>
         );
     }
@@ -66,7 +66,7 @@ class TreeView extends React.Component<Props> {
 
     private tree = (data: ASTNode & { dx?: number, dy?: number }) => {
         const root = hierarchy(data);
-        root.data.dx = 10;
+        root.data.dx = 30;
         root.data.dy = this.width / (root.height + 1);
         return d3.tree<ASTNode & { dx?: number, dy?: number }>()
             .nodeSize([root.data.dx, root.data.dy])(root);
@@ -110,23 +110,28 @@ class TreeView extends React.Component<Props> {
 
         const node = g.append('g')
             .attr('stroke-linejoin', 'round')
-            .attr('stroke-width', 3)
+            .attr('stroke-width', 1)
             .selectAll('g')
             .data(root.descendants())
             .join('g')
             .attr('transform', (d) => `translate(${d.y},${d.x})`);
 
-        node.append('circle')
-            .attr('fill', (d) => d.children ? '#555' : '#999')
-            .attr('r', 2.5);
+        node.append('rect')
+            .attr('fill', (d) => d.children ? '#fff' : '#eee')
+            .attr('stroke', '#333')
+            .attr('x', -25)
+            .attr('y', -10)
+            .attr('width', 50)
+            .attr('height', 20);
 
         node.append('text')
+            .style('font-size', '1em')
             .attr('dy', '0.31em')
-            .attr('x', (d) => d.children ? -6 : 6)
-            .attr('text-anchor', (d) => d.children ? 'end' : 'start')
             .text((d) => d.data.name)
+            .attr('text-anchor', 'middle')
             .clone(true).lower()
-            .attr('stroke', 'white');
+            .attr('stroke', 'white')
+            ;
     }
 }
 
