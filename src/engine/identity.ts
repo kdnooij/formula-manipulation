@@ -30,8 +30,35 @@ export function removeIdentities(node: NodeType): NodeType {
 
     // Case of product
 
+    if (node.type === ASTType.product) {
+        node.children = _.compact(node.children.map((child) => {
+            // Remove a child if it is has value 1
+            if ((child as NodeType).type === ASTType.number
+                && (child as ASTNumberNode).value === 1) {
+                return undefined;
+            } else {
+                return child;
+            }
+        }));
+
+        const children = node.children;
+        // tslint:disable-next-line:prefer-for-of
+        for (let _i = 0; _i < children.length; _i++) {
+            if ((children[_i] as NodeType).type === ASTType.number && (children[_i] as ASTNumberNode).value === 0) {
+                node = new ASTNumberNode(0);
+                return node;
+            }
+        }
+        if (node.children.length === 0) {
+            return undefined;
+        } else {
+            return node;
+        }
+    }
+
     // Case of power
 
     // Otherwise
+
     return node;
 }
