@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { applyAssociative } from '../engine/assocative';
 import { removeIdentities } from '../engine/identity';
+import { applyNumerical } from '../engine/numerical';
 import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { ParserError } from '../parsing/errorListener';
@@ -21,6 +22,17 @@ export function execute(input: string): { output: string, error?: string } | und
             try {
                 const parser = new Parser(tokens.slice(1).join(' '));
                 store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
+                return { output: 'parsed: ' + parser.toString() };
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        case '/p':
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                const newTree = simplifyInput(parser.getTree()[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], parser.getRuleNames()));
+                }
                 return { output: 'parsed: ' + parser.toString() };
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
@@ -53,6 +65,18 @@ export function execute(input: string): { output: string, error?: string } | und
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
                 const newTree = removeIdentities(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/numerical': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = applyNumerical(tree.tree[0] as NodeType);
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }

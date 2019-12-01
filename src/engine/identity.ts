@@ -3,14 +3,10 @@ import { ASTType } from '../parsing/nodes/node';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
 import { NodeType } from './simplification';
 
-export function removeIdentities(node: NodeType): NodeType | undefined {
+export function removeIdentities(node: NodeType): NodeType {
     if (node.type === ASTType.summation || node.type === ASTType.product || node.type === ASTType.power) {
         // Remove identities from children
-        node.children = _.compact(node.children.map((child) => removeIdentities(child as NodeType)));
-        // We remove the node if it has no children after removing identities
-        if (node.children.length === 0) {
-            return undefined;
-        }
+        node.children = node.children.map((child) => removeIdentities(child as NodeType));
     }
 
     // Case of summation
@@ -26,7 +22,7 @@ export function removeIdentities(node: NodeType): NodeType | undefined {
         }));
 
         if (node.children.length === 0) {
-            return undefined;
+            return new ASTNumberNode(0);
         } else {
             return node;
         }
