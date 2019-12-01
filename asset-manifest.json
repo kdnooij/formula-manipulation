@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/formula-manipulation/static/css/main.76f8c067.chunk.css",
-    "main.js": "/formula-manipulation/static/js/main.0c4e8ad3.chunk.js",
-    "main.js.map": "/formula-manipulation/static/js/main.0c4e8ad3.chunk.js.map",
+    "main.js": "/formula-manipulation/static/js/main.e7ef04d7.chunk.js",
+    "main.js.map": "/formula-manipulation/static/js/main.e7ef04d7.chunk.js.map",
     "runtime-main.js": "/formula-manipulation/static/js/runtime-main.dc325633.js",
     "runtime-main.js.map": "/formula-manipulation/static/js/runtime-main.dc325633.js.map",
-    "static/js/2.f6e7926b.chunk.js": "/formula-manipulation/static/js/2.f6e7926b.chunk.js",
-    "static/js/2.f6e7926b.chunk.js.map": "/formula-manipulation/static/js/2.f6e7926b.chunk.js.map",
+    "static/js/2.48541ee1.chunk.js": "/formula-manipulation/static/js/2.48541ee1.chunk.js",
+    "static/js/2.48541ee1.chunk.js.map": "/formula-manipulation/static/js/2.48541ee1.chunk.js.map",
     "index.html": "/formula-manipulation/index.html",
-    "precache-manifest.5286f918845e1f1cd9d40d34fdfb9821.js": "/formula-manipulation/precache-manifest.5286f918845e1f1cd9d40d34fdfb9821.js",
+    "precache-manifest.ae8a1f6559dcfa67e4a409ed977bf812.js": "/formula-manipulation/precache-manifest.ae8a1f6559dcfa67e4a409ed977bf812.js",
     "service-worker.js": "/formula-manipulation/service-worker.js",
     "static/css/main.76f8c067.chunk.css.map": "/formula-manipulation/static/css/main.76f8c067.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.dc325633.js",
-    "static/js/2.f6e7926b.chunk.js",
+    "static/js/2.48541ee1.chunk.js",
     "static/css/main.76f8c067.chunk.css",
-    "static/js/main.0c4e8ad3.chunk.js"
+    "static/js/main.e7ef04d7.chunk.js"
   ]
 }
