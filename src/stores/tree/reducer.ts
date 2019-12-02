@@ -14,7 +14,7 @@ export default function reducer(state: State = initialState, action: Actions): S
         case ActionTypeNames.AddToHistory:
             return {
                 history: [...(state.history || []), { tree: action.tree, ruleNames: action.ruleNames }],
-                index: state.index + 1,
+                index: state.history.length,
             };
         case ActionTypeNames.SetHistory:
             return {
