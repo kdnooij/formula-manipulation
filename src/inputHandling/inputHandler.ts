@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { applyAssociative } from '../engine/assocative';
 import { removeIdentities } from '../engine/identity';
 import { applyNumerical } from '../engine/numerical';
+import { orderNode } from '../engine/ordering';
 import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { ParserError } from '../parsing/errorListener';
@@ -77,6 +78,18 @@ export function execute(input: string): { output: string, error?: string } | und
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
                 const newTree = applyNumerical(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/order': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = orderNode(tree.tree[0] as NodeType);
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
