@@ -147,9 +147,9 @@ export function execute(input: string): { output: string, error?: string } | und
                                 root = applyAssociative(root as NodeType);
                                 root = removeIdentities(root as NodeType);
                                 root = powerSimplify(root as NodeType);
+                                root = applyNumerical(root as NodeType);
                                 root = removeBrackets(root as NodeType);
                                 root = likeTerms(root as NodeType);
-                                root = applyNumerical(root as NodeType);
                             }
                         }
                         return { output: 'Result: ' + printNode(root as NodeType) };
