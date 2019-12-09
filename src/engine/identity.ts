@@ -55,6 +55,8 @@ export function removeIdentities(node: NodeType): NodeType | undefined {
         }
         if (node.children.length === 0) {
             return undefined;
+        } else if (node.children.length === 1){
+            return children[0] as NodeType;
         } else {
             return node;
         }
