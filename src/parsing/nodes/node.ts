@@ -6,7 +6,7 @@ export enum ASTType {
     symbol = 'symbol',
     summation = 'summation',
     product = 'product',
-    power = 'power',
+    power = 'power'
 }
 
 export abstract class ASTNode {
