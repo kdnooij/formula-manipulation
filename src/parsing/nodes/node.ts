@@ -11,6 +11,7 @@ export enum ASTType {
 
 export abstract class ASTNode {
     public name: string;
+    public hash?: string;
 
     constructor(type: string) {
         this.name = type;

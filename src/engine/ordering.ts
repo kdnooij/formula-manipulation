@@ -11,7 +11,9 @@ export function orderNode(node: NodeType): NodeType {
         // Sort children
         node.children = node.children.map((child) => orderNode(child as NodeType));
 
-        node.children = (node.children as NodeType[]).sort((a, b) => sortNode(a, b));
+        if (node.type === ASTType.summation || node.type === ASTType.product) {
+            node.children = (node.children as NodeType[]).sort((a, b) => sortNode(a, b));
+        }
     }
 
     return node;
@@ -25,24 +27,24 @@ function sortNode(a: NodeType, b: NodeType) {
         return sortLexi(a, b);
     }
     if (a.type === ASTType.number) {
-        return 1;
+        return -1;
     }
     if (b.type === ASTType.number) {
-        return -1;
-    }
-    if (a.type === ASTType.variable) {
         return 1;
     }
-    if (b.type === ASTType.variable) {
+    if (a.type === ASTType.variable) {
         return -1;
+    }
+    if (b.type === ASTType.variable) {
+        return 1;
     }
 
     return sortSubTrees(a, b);
 }
 
-// Sort numbers on inverse numerical ordering
+// Sort numbers on numerical ordering
 function sortNumerical(a: ASTNumberNode, b: ASTNumberNode): number {
-    return a.value > b.value ? -1 : a.value < b.value ? 1 : 0;
+    return a.value < b.value ? -1 : a.value > b.value ? 1 : 0;
 }
 
 // Sort variables lexicographically
@@ -75,7 +77,21 @@ function sortSubTrees(a: NodeType, b: NodeType): number {
 }
 
 function sortOnFirst(a: ASTSummationNode | ASTProductNode, b: ASTSummationNode | ASTProductNode): number {
-    return sortNode(a.children[0] as NodeType, b.children[0] as NodeType);
+    let res = sortNode(a.children[0] as NodeType, b.children[0] as NodeType);
+    let i = 1;
+    while (res === 0) {
+        if (i < a.children.length && i < b.children.length) {
+            res = sortNode(
+                a.children[i] as NodeType,
+                b.children[i] as NodeType
+            );
+        } else {
+            return a.children.length < b.children.length ?
+                -1 : a.children.length > b.children.length ? 1 : 0;
+        }
+        i++;
+    }
+    return res;
 }
 
 function sortPowers(a: ASTPowerNode, b: ASTPowerNode): number {

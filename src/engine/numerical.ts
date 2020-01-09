@@ -46,6 +46,8 @@ export function applyNumericalSummation(node: ASTSummationNode) {
 
     if (node.children.length === 0) {
         return new ASTNumberNode(sum);
+    } else if (node.children.length === 1 && sum === 0) {
+        return node.children[0] as NodeType;
     } else if (sum !== 0) {
         // Add constant to end of sum
         node.children.push(new ASTNumberNode(sum));
@@ -73,6 +75,8 @@ export function applyNumericalProduct(node: ASTProductNode) {
 
     if (node.children.length === 0) {
         return new ASTNumberNode(product);
+    } else if (node.children.length === 1 && product === 1) {
+        return node.children[0] as NodeType;
     } else if (product !== 1) {
         // Add constant to start of product
         node.children.unshift(new ASTNumberNode(product));

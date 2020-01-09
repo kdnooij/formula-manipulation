@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { applyAssociative } from '../engine/assocative';
 import { removeBrackets } from '../engine/brackets';
+import { hashNode } from '../engine/hashing';
 import { removeIdentities } from '../engine/identity';
 import { likeTerms } from '../engine/likeTerms';
 import { applyNumerical } from '../engine/numerical';
@@ -8,9 +9,10 @@ import { orderNode } from '../engine/ordering';
 import { powerSimplify } from '../engine/power';
 import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
+import { smartSimplify } from '../engine/smartSimplify';
 import { isUndefined } from '../engine/undefined';
 import { ParserError } from '../parsing/errorListener';
-import { ASTType } from '../parsing/nodes/node';
+import { ASTNode, ASTType } from '../parsing/nodes/node';
 import { Parser } from '../parsing/parser';
 import { clearHistory as clearConsoleHistory } from '../stores/console/actionCreators';
 import store from '../stores/store';
@@ -182,6 +184,67 @@ export function execute(input: string): { output: string, error?: string } | und
                 }
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
+        case '/model2': {
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                let newTree = simplifyInput(parser.getTree()[0] as NodeType);
+
+                let lastHash;
+                hashNode(newTree);
+                newTree = smartSimplify(newTree as NodeType);
+                newTree = orderNode(newTree as NodeType);
+                hashNode(newTree);
+
+                while (lastHash !== newTree?.hash) {
+                    lastHash = newTree?.hash;
+                    newTree = applyAssociative(newTree as NodeType);
+                    newTree = removeIdentities(newTree as NodeType);
+                    newTree = applyNumerical(newTree as NodeType);
+                    newTree = powerSimplify(newTree as NodeType);
+                    newTree = orderNode(newTree as NodeType);
+                    hashNode(newTree as NodeType);
+                    newTree = smartSimplify(newTree as NodeType);
+                    newTree = applyAssociative(newTree as NodeType);
+                    newTree = removeIdentities(newTree as NodeType);
+                    newTree = applyNumerical(newTree as NodeType);
+                    newTree = powerSimplify(newTree as NodeType);
+                    newTree = orderNode(newTree as NodeType);
+                    hashNode(newTree);
+                }
+
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], parser.getRuleNames()));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
+        case '/smart': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = smartSimplify(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/hash': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = tree.tree[0];
+                hashNode(newTree as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply hashing to` };
             }
         }
         default:
