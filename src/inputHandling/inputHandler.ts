@@ -5,6 +5,7 @@ import { differentiate } from '../engine/differentiate';
 import { endPrint } from '../engine/finalPrint';
 import { hashNode } from '../engine/hashing';
 import { removeIdentities } from '../engine/identity';
+import { integrate } from '../engine/integrate';
 import { likeTerms } from '../engine/likeTerms';
 import { applyNumerical } from '../engine/numerical';
 import { orderNode } from '../engine/ordering';
@@ -168,6 +169,30 @@ export function execute(input: string): { output: string, error?: string } | und
                 return { output: '', error: `Nothing to apply rule to` };
             }
         }
+        case '/powRed': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = powerToProduct(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/int': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = integrate(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + printNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
         case '/model1': {
             try {
                 const parser = new Parser(tokens.slice(1).join(' '));
@@ -255,6 +280,39 @@ export function execute(input: string): { output: string, error?: string } | und
                         if (check && (isUndefined(check) as NodeType).type === ASTType.null) {
                             return { output: 'Result: the expression is undefined' };
                         }
+                        if (root) {
+                            root = applyAssociative(root as NodeType);
+                            root = removeIdentities(root as NodeType);
+                            root = powerSimplify(root as NodeType);
+                            root = removeBrackets(root as NodeType);
+                            root = likeTerms(root as NodeType);
+                            root = applyNumerical(root as NodeType);
+                            
+                        }
+                    }
+                    root = endPrint(root as NodeType); 
+                    return { output: 'Result: ' + printNode(root as NodeType) };
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
+                }
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
+        case '/model4': {
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
+                const tree = _.cloneDeep(store.dispatch(updateTree(parser.getTree(), parser.getRuleNames())));
+                if (tree) {
+                    const newTree = simplifyInput(tree.tree[0] as NodeType);
+                    if (newTree) {
+                        store.dispatch(updateTree([newTree], tree.ruleNames));
+                    }
+                    const flat = applyAssociative(newTree as NodeType);
+                    const integratedTree = integrate(flat as NodeType);
+                    let root = _.cloneDeep(integratedTree);
+                    for (let i = 0; i < 100; i++) {
                         if (root) {
                             root = applyAssociative(root as NodeType);
                             root = removeIdentities(root as NodeType);
