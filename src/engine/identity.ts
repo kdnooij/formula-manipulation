@@ -47,6 +47,8 @@ function removeIdentitiesSummation(node: ASTSummationNode) {
 
     if (node.children.length === 0) {
         return new ASTNumberNode(0);
+    } else if (node.children.length === 1) {
+        return node.children[0] as NodeType;
     } else {
         return node;
     }
@@ -72,6 +74,8 @@ function removeIdentitiesProduct(node: ASTProductNode) {
     }
     if (node.children.length === 0) {
         return new ASTNumberNode(1);
+    } else if (node.children.length === 1) {
+        return node.children[0] as NodeType;
     } else {
         return node;
     }

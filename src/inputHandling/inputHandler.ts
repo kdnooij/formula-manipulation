@@ -202,13 +202,10 @@ export function execute(input: string): { output: string, error?: string } | und
                         newTree = removeIdentities(newTree as NodeType);
                         newTree = applyNumerical(newTree as NodeType);
                         newTree = powerSimplify(newTree as NodeType);
-                        newTree = orderNode(newTree as NodeType);
-                        hashNode(newTree);
                         newTree = smartSimplify(newTree);
                         newTree = removeSingles(newTree);
                         newTree = orderNode(newTree as NodeType);
                         hashNode(newTree);
-                        console.log('step', printNode(newTree));
                     }
                     lastHash = undefined;
                     newTree = orderNode(newTree as NodeType);
@@ -225,7 +222,7 @@ export function execute(input: string): { output: string, error?: string } | und
                     }
 
                     if (newTree) {
-                        store.dispatch(updateTree([newTree], parser.getRuleNames()));
+                        store.dispatch(updateTree([_.cloneDeep(newTree)], parser.getRuleNames()));
                     }
                     return { output: 'Result: ' + printNode(newTree as NodeType) };
                 } else {

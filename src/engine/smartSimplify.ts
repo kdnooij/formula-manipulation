@@ -5,22 +5,32 @@ import { ASTPowerNode } from '../parsing/nodes/powerNode';
 import { ASTProductNode } from '../parsing/nodes/productNode';
 import { ASTSummationNode } from '../parsing/nodes/summationNode';
 import { hashNode } from './hashing';
+import { orderNode } from './ordering';
 import { NodeType } from './simplification';
 
 export function smartSimplify(node: NodeType): NodeType {
+    node = orderNode(node);
+    hashNode(node);
     if (node.type === ASTType.summation || node.type === ASTType.product || node.type === ASTType.power) {
         // simplify children
         node.children = node.children.map((child) => smartSimplify(child as NodeType));
     }
 
+    let ret: NodeType;
     switch (node.type) {
         case ASTType.summation:
-            return smartSimplifySummation(node);
+            ret = smartSimplifySummation(node);
+            break;
         case ASTType.product:
-            return smartSimplifyProduct(node);
+            ret =  smartSimplifyProduct(node);
+            break;
         default:
-            return node;
+            ret = node;
+            break;
     }
+    ret = orderNode(ret);
+    hashNode(ret);
+    return ret;
 }
 
 function smartSimplifySummation(node: ASTSummationNode): NodeType {

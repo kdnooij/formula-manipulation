@@ -1,6 +1,6 @@
-import { ASTType, ASTNode } from '../parsing/nodes/node';
-import { NodeType } from './simplification';
+import { ASTNode, ASTType } from '../parsing/nodes/node';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
+import { NodeType } from './simplification';
 /* 
 export function printNode(node?: NodeType): string {
     if (node) {
