@@ -19,6 +19,7 @@ import { clearHistory as clearConsoleHistory } from '../stores/console/actionCre
 import store from '../stores/store';
 import { clearHistory as clearTreeHistory, updateTree } from '../stores/tree/actionCreators';
 import { getTree } from '../stores/tree/selectors';
+import { testModel } from './testModels';
 
 export function execute(input: string): { output: string, error?: string } | undefined {
     const tokens = input.split(' ');
@@ -197,6 +198,10 @@ export function execute(input: string): { output: string, error?: string } | und
                     let lastHash;
                     // Do smart simplification
                     while (lastHash !== newTree?.hash) {
+                        const check = _.cloneDeep(newTree);
+                        if (check && isUndefined(check).type === ASTType.null) {
+                            return { output: 'Result: the expression is undefined' };
+                        }
                         lastHash = newTree?.hash;
                         newTree = applyAssociative(newTree as NodeType);
                         newTree = removeIdentities(newTree as NodeType);
@@ -256,6 +261,12 @@ export function execute(input: string): { output: string, error?: string } | und
             } else {
                 return { output: '', error: `Nothing to apply hashing to` };
             }
+        }
+        case '/test': {
+            const i = parseInt(tokens.slice(1).join(' '), 10);
+            const tree = _.cloneDeep(getTree(store.getState()));
+            testModel(i);
+            return { output: 'Tested model ' + i };
         }
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };

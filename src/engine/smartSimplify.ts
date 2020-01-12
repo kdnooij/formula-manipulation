@@ -6,6 +6,7 @@ import { ASTProductNode } from '../parsing/nodes/productNode';
 import { ASTSummationNode } from '../parsing/nodes/summationNode';
 import { hashNode } from './hashing';
 import { orderNode } from './ordering';
+import { removeSingles } from './removeSingles';
 import { NodeType } from './simplification';
 
 export function smartSimplify(node: NodeType): NodeType {
@@ -42,6 +43,7 @@ function smartSimplifySummation(node: ASTSummationNode): NodeType {
             if (((x as ASTProductNode).children[0] as NodeType).type === ASTType.number) {
                 c = _.cloneDeep((x as ASTProductNode).children[0]);
                 n = new ASTProductNode((n as ASTProductNode).children.slice(1));
+                n = removeSingles(n as NodeType);
                 hashNode(n as NodeType);
             }
         }
