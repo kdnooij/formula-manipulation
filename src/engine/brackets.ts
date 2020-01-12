@@ -47,7 +47,7 @@ export function productBrackets(node: ASTProductNode): NodeType {
                         return new ASTProductNode([child, children[i - 1]]);
                     });
                     return new ASTProductNode([new ASTSummationNode(newChildren), 
-                        new ASTProductNode(children.slice(1, i)), 
+                        new ASTProductNode(children.slice(0, i - 1)), 
                         new ASTProductNode(children.slice(i + 1, children.length))]);
                 }
             }
