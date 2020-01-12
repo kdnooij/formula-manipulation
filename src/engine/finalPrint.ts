@@ -23,10 +23,11 @@ export function endPrint(node: NodeType) {
             return endPrintProduct(node);
         }
 
-          // case of power
+         /* // case of power
         if (node.type === ASTType.power) {
             return endPrintPower(node);
         }
+        */
     }
 
     return node;
@@ -49,6 +50,7 @@ function endPrintProduct(node: ASTProductNode) {
     return node;
 }
 
+/*
 function endPrintPower(node: ASTPowerNode) {
     if (node.children.length === 2) {
         const child2 = node.children[0] as NodeType;
@@ -67,3 +69,4 @@ function endPrintPower(node: ASTPowerNode) {
     }
     return node;
 }
+*/

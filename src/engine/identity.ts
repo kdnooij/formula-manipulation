@@ -85,13 +85,14 @@ function removeIdentitiesPower(node: ASTPowerNode) {
     const base = node.children[0] as NodeType;
     const exp = node.children[1] as NodeType;
 
-    if (base.type === ASTType.number && exp.type === ASTType.number) {
+    if (exp.type === ASTType.number) {
         if (exp.value === 0) {
             return new ASTNumberNode(1);
         } else if (exp.value === 1) {
             return base;
         }
-
+    }
+    if (base.type === ASTType.number) {
         if (base.value === 1 || base.value === 0) {
             return base;
         }

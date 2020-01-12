@@ -9,6 +9,7 @@ import { likeTerms } from '../engine/likeTerms';
 import { applyNumerical } from '../engine/numerical';
 import { orderNode } from '../engine/ordering';
 import { powerSimplify } from '../engine/power';
+import { powerToProduct } from '../engine/powerToProduct';
 import { printNode } from '../engine/printing';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { smartSimplify } from '../engine/smartSimplify';
@@ -190,6 +191,7 @@ export function execute(input: string): { output: string, error?: string } | und
                             root = removeBrackets(root as NodeType);
                             root = likeTerms(root as NodeType);
                             root = applyNumerical(root as NodeType);
+                            root = powerToProduct(root as NodeType);
                         }
                     }
                     return { output: 'Result: ' + printNode(root as NodeType) };
