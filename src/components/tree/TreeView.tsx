@@ -4,15 +4,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 import { prettyPrintNode, printNode } from '../../engine/printing';
-import { NodeType } from '../../engine/simplification';
 import { FileContext } from '../../parsing/generated/ExpressionParser';
-import { ASTNode } from '../../parsing/nodes/node';
+import { ASTNode, NodeType } from '../../parsing/nodes/node';
 import { RootState } from '../../stores/store';
 import { getTree } from '../../stores/tree/selectors';
 import './TreeView.scss';
 
 interface Props {
-    tree?: { tree: ASTNode[], ruleNames: string[] };
+    tree?: { tree: NodeType[], ruleNames: string[] };
 }
 
 class TreeView extends React.Component<Props> {
@@ -37,7 +36,7 @@ class TreeView extends React.Component<Props> {
                     />
                     {this.props.tree ? (
                         <span className="StringView">
-                            {prettyPrintNode(this.props.tree.tree[0] as NodeType)}
+                            {prettyPrintNode(this.props.tree.tree[0])}
                         </span>
                     ) : null}
                 </Container>

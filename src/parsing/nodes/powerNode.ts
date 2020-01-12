@@ -1,10 +1,10 @@
-import { ASTNode, ASTType } from './node';
+import { ASTNode, ASTType, NodeType } from './node';
 
 export class ASTPowerNode extends ASTNode {
     public type: ASTType.power = ASTType.power;
-    public children: ASTNode[];
+    public children: NodeType[];
 
-    public constructor(children: ASTNode[]) {
+    public constructor(children: NodeType[]) {
         super(ASTType.power);
         this.children = children;
         this.name = '^';

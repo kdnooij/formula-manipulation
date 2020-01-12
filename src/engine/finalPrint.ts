@@ -1,17 +1,16 @@
 import _ from 'lodash';
-import { ASTType } from '../parsing/nodes/node';
+import { ASTType, NodeType } from '../parsing/nodes/node';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
 import { ASTPowerNode } from '../parsing/nodes/powerNode';
 import { ASTProductNode } from '../parsing/nodes/productNode';
 import { ASTSummationNode } from '../parsing/nodes/summationNode';
 import { ASTVariableNode } from '../parsing/nodes/variableNode';
-import { NodeType } from './simplification';
 
 export function endPrint(node: NodeType) {
     if (node.type === ASTType.summation || node.type === ASTType.product || node.type === ASTType.power) {
         // Apply rule to all children
         node.children = node.children.map((child) =>
-            endPrint(child as NodeType));
+            endPrint(child));
 
         // case of summation
         if (node.type === ASTType.summation) {
@@ -39,8 +38,8 @@ function endPrintSum(node: ASTSummationNode) {
 
 function endPrintProduct(node: ASTProductNode) {
     if (node.children.length === 2) {
-        const child1 = node.children[0] as NodeType;
-        const child2 = node.children[1] as NodeType;
+        const child1 = node.children[0];
+        const child2 = node.children[1];
 
         if ((child1.type === ASTType.number) && (child2.type === ASTType.variable) && 
         (child1.value < 0)) {
@@ -53,8 +52,8 @@ function endPrintProduct(node: ASTProductNode) {
 /*
 function endPrintPower(node: ASTPowerNode) {
     if (node.children.length === 2) {
-        const child2 = node.children[0] as NodeType;
-        const child1 = node.children[1] as NodeType;
+        const child2 = node.children[0];
+        const child1 = node.children[1];
 
         if ((child1.type === ASTType.number) && (child2.type === ASTType.variable) && 
         (child1.value < 0)) {

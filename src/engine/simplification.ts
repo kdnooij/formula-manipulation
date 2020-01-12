@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { ASTExpressionNode } from '../parsing/nodes/expressionNode';
-import { ASTType } from '../parsing/nodes/node';
+import { ASTType, NodeType } from '../parsing/nodes/node';
 import { ASTNullNode } from '../parsing/nodes/nullNode';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
 import { ASTPowerNode } from '../parsing/nodes/powerNode';
@@ -8,9 +8,6 @@ import { ASTProductNode } from '../parsing/nodes/productNode';
 import { ASTSummationNode } from '../parsing/nodes/summationNode';
 import { ASTSymbolNode } from '../parsing/nodes/symbolNode';
 import { ASTVariableNode } from '../parsing/nodes/variableNode';
-
-export type NodeType = ASTNullNode | ASTNumberNode | ASTVariableNode | ASTSymbolNode |
-    ASTExpressionNode | ASTSummationNode | ASTProductNode | ASTPowerNode ;
 
 export function simplifyInput(node: NodeType): NodeType | undefined {
     switch (node.type) {
@@ -50,7 +47,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
 
     if (node.children) {
         if (node.children.length === 1) {
-            const child: NodeType = node.children[0] as NodeType;
+            const child: NodeType = node.children[0];
             // Check if expression only contains a variable
             if (child.type === ASTType.variable) {
                 return simplifyInput(child);
@@ -62,7 +59,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
         }
 
         if (node.children.length === 2) {
-            const children = node.children as NodeType[];
+            const children = node.children;
             // Unary Rule
             node.children = _.compact([
                 sI(new ASTNumberNode(0)),
@@ -73,7 +70,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
         }
 
         if (node.children.length === 3) {
-            const children = node.children as NodeType[];
+            const children = node.children;
             // Remove brackets
             if (children[0].type === ASTType.symbol) {
                 return simplifyInput(children[1]);
@@ -89,10 +86,10 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
                         ])));
                     case '-': // Difference rule
                         return sI(new ASTSummationNode(_.compact([
-                            sI(node.children[0] as NodeType),
+                            sI(node.children[0]),
                             sI(new ASTProductNode(_.compact([
                                 sI(new ASTNumberNode(-1)),
-                                sI(node.children[2] as NodeType)
+                                sI(node.children[2])
                             ]))),
                         ])));
                     case '*':
@@ -102,16 +99,16 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
                         ])));
                     case '/': // Quotient rule
                         return sI(new ASTProductNode(_.compact([
-                            sI(node.children[0] as NodeType),
+                            sI(node.children[0]),
                             sI(new ASTPowerNode(_.compact([
-                                sI(node.children[2] as NodeType),
+                                sI(node.children[2]),
                                 sI(new ASTNumberNode(-1))
                             ]))),
                         ])));
                     case '^':
                         return sI(new ASTPowerNode(_.compact([
-                            sI(node.children[0] as NodeType),
-                            sI(node.children[2] as NodeType),
+                            sI(node.children[0]),
+                            sI(node.children[2]),
                         ])));
                     default:
                         return node;
@@ -123,7 +120,7 @@ function simplifyExpression(node: ASTExpressionNode): NodeType | undefined {
     // Simplify children
     if (node.children) {
         node.children = _.compact(node.children.map((child) => {
-            return simplifyInput(child as NodeType);
+            return simplifyInput(child);
             // tslint:disable-next-line:no-any
         }));
     }

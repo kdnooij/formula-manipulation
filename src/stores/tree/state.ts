@@ -1,7 +1,7 @@
 import { FileContext } from '../../parsing/generated/ExpressionParser';
-import { ASTNode } from '../../parsing/nodes/node';
+import { ASTNode, NodeType } from '../../parsing/nodes/node';
 
 export default interface State {
-    history: Array<{ tree: ASTNode[], ruleNames: string[] }>;
+    history: Array<{ tree: NodeType[], ruleNames: string[] }>;
     index: number;
 }

@@ -1,4 +1,4 @@
-import { ASTNode, ASTType } from './node';
+import { ASTNode, ASTType, NodeType } from './node';
 
 export enum ASTOperator {
     id = 'id',
@@ -12,9 +12,9 @@ export enum ASTOperator {
 export class ASTExpressionNode extends ASTNode {
     public operator: ASTOperator;
     public type: ASTType.expression = ASTType.expression;
-    public children: ASTNode[];
+    public children: NodeType[];
 
-    public constructor(operator: ASTOperator, children: ASTNode[]) {
+    public constructor(operator: ASTOperator, children: NodeType[]) {
         super(ASTType.expression);
         this.children = children;
         this.operator = operator;

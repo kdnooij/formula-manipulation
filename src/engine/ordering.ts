@@ -1,18 +1,17 @@
-import { ASTType } from '../parsing/nodes/node';
+import { ASTType, NodeType } from '../parsing/nodes/node';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
 import { ASTPowerNode } from '../parsing/nodes/powerNode';
 import { ASTProductNode } from '../parsing/nodes/productNode';
 import { ASTSummationNode } from '../parsing/nodes/summationNode';
 import { ASTVariableNode } from '../parsing/nodes/variableNode';
-import { NodeType } from './simplification';
 
 export function orderNode(node: NodeType): NodeType {
     if (node.type === ASTType.summation || node.type === ASTType.product || node.type === ASTType.power) {
         // Sort children
-        node.children = node.children.map((child) => orderNode(child as NodeType));
+        node.children = node.children.map((child) => orderNode(child));
 
         if (node.type === ASTType.summation || node.type === ASTType.product) {
-            node.children = (node.children as NodeType[]).sort((a, b) => sortNode(a, b));
+            node.children = (node.children).sort((a, b) => sortNode(a, b));
         }
     }
 
@@ -77,13 +76,13 @@ function sortSubTrees(a: NodeType, b: NodeType): number {
 }
 
 function sortOnFirst(a: ASTSummationNode | ASTProductNode, b: ASTSummationNode | ASTProductNode): number {
-    let res = sortNode(a.children[0] as NodeType, b.children[0] as NodeType);
+    let res = sortNode(a.children[0], b.children[0]);
     let i = 1;
     while (res === 0) {
         if (i < a.children.length && i < b.children.length) {
             res = sortNode(
-                a.children[i] as NodeType,
-                b.children[i] as NodeType
+                a.children[i],
+                b.children[i]
             );
         } else {
             return a.children.length < b.children.length ?
@@ -95,9 +94,9 @@ function sortOnFirst(a: ASTSummationNode | ASTProductNode, b: ASTSummationNode |
 }
 
 function sortPowers(a: ASTPowerNode, b: ASTPowerNode): number {
-    const res = sortNode(a.children[0] as NodeType, b.children[0] as NodeType);
+    const res = sortNode(a.children[0], b.children[0]);
     if (res === 0) {
-        return sortNode(a.children[1] as NodeType, b.children[1] as NodeType);
+        return sortNode(a.children[1], b.children[1]);
     } else {
         return res;
     }

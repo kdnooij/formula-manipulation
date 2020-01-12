@@ -1,4 +1,4 @@
-import { ASTNode } from '../../parsing/nodes/node';
+import { ASTNode, NodeType } from '../../parsing/nodes/node';
 import {
     ActionTypeNames,
     AddToHistoryAction, ClearHistoryAction,
@@ -6,7 +6,7 @@ import {
 } from './actions';
 import State from './state';
 
-export function updateTree(tree: ASTNode[], ruleNames: string[]): UpdateTreeAction {
+export function updateTree(tree: NodeType[], ruleNames: string[]): UpdateTreeAction {
     return {
         ruleNames,
         tree,
@@ -14,7 +14,7 @@ export function updateTree(tree: ASTNode[], ruleNames: string[]): UpdateTreeActi
     };
 }
 
-export function addToHistory(tree: ASTNode[], ruleNames: string[]): AddToHistoryAction {
+export function addToHistory(tree: NodeType[], ruleNames: string[]): AddToHistoryAction {
     return {
         ruleNames,
         tree,

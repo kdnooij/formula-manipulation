@@ -8,37 +8,37 @@ import {
 } from './generated/ExpressionParser';
 import { ExpressionVisitor } from './generated/ExpressionVisitor';
 import { ASTExpressionNode, ASTOperator } from './nodes/expressionNode';
-import { ASTNode, ASTType } from './nodes/node';
+import { ASTNode, ASTType, NodeType } from './nodes/node';
 import { ASTNullNode } from './nodes/nullNode';
 import { ASTNumberNode } from './nodes/numberNode';
 import { ASTSymbolNode } from './nodes/symbolNode';
 import { ASTVariableNode } from './nodes/variableNode';
 
 export class ASTVisitor
-    extends AbstractParseTreeVisitor<ASTNode[]>
-    implements ExpressionVisitor<ASTNode[]> {
+    extends AbstractParseTreeVisitor<NodeType[]>
+    implements ExpressionVisitor<NodeType[]> {
 
     public defaultResult() {
         return [];
     }
 
-    public aggregateResult(aggregate: ASTNode[], nextResult: ASTNode[]) {
+    public aggregateResult(aggregate: NodeType[], nextResult: NodeType[]) {
         return [...aggregate, ...nextResult];
     }
 
-    public visitVariable(context: VariableContext): ASTNode[] {
+    public visitVariable(context: VariableContext): NodeType[] {
         return [new ASTVariableNode(context.text)];
     }
 
-    public visitScientific(context: ScientificContext): ASTNode[] {
+    public visitScientific(context: ScientificContext): NodeType[] {
         return [new ASTNumberNode(parseFloat(context.text))];
     }
 
-    public visitAtom(context: AtomContext): ASTNode[] {
+    public visitAtom(context: AtomContext): NodeType[] {
         return super.visitChildren(context);
     }
 
-    public visitExpression(context: ExpressionContext): ASTNode[] {
+    public visitExpression(context: ExpressionContext): NodeType[] {
         const children = super.visitChildren(context);
 
         /* if (context.children) {
@@ -55,11 +55,11 @@ export class ASTVisitor
         // }
     }
     
-    public visitFile(context: FileContext): ASTNode[] {
+    public visitFile(context: FileContext): NodeType[] {
         return super.visitChildren(context);
     }
 
-    public visitRelop(context: RelopContext): ASTNode[] {
+    public visitRelop(context: RelopContext): NodeType[] {
         return super.visitChildren(context);
     }
 
