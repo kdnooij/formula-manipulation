@@ -8,6 +8,7 @@ import { applyNumerical } from '../engine/numerical';
 import { orderNode } from '../engine/ordering';
 import { powerSimplify } from '../engine/power';
 import { printNode } from '../engine/printing';
+import { removeSingles } from '../engine/removeSingles';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { smartSimplify } from '../engine/smartSimplify';
 import { isUndefined } from '../engine/undefined';
@@ -190,34 +191,46 @@ export function execute(input: string): { output: string, error?: string } | und
             try {
                 const parser = new Parser(tokens.slice(1).join(' '));
                 let newTree = simplifyInput(parser.getTree()[0] as NodeType);
-
-                let lastHash;
-                hashNode(newTree);
-                newTree = smartSimplify(newTree as NodeType);
-                newTree = orderNode(newTree as NodeType);
-                hashNode(newTree);
-
-                while (lastHash !== newTree?.hash) {
-                    lastHash = newTree?.hash;
-                    newTree = applyAssociative(newTree as NodeType);
-                    newTree = removeIdentities(newTree as NodeType);
-                    newTree = applyNumerical(newTree as NodeType);
-                    newTree = powerSimplify(newTree as NodeType);
-                    newTree = orderNode(newTree as NodeType);
-                    hashNode(newTree as NodeType);
-                    newTree = smartSimplify(newTree as NodeType);
-                    newTree = applyAssociative(newTree as NodeType);
-                    newTree = removeIdentities(newTree as NodeType);
-                    newTree = applyNumerical(newTree as NodeType);
-                    newTree = powerSimplify(newTree as NodeType);
+                if (newTree) {
                     newTree = orderNode(newTree as NodeType);
                     hashNode(newTree);
-                }
+                    let lastHash;
+                    // Do smart simplification
+                    while (lastHash !== newTree?.hash) {
+                        lastHash = newTree?.hash;
+                        newTree = applyAssociative(newTree as NodeType);
+                        newTree = removeIdentities(newTree as NodeType);
+                        newTree = applyNumerical(newTree as NodeType);
+                        newTree = powerSimplify(newTree as NodeType);
+                        newTree = orderNode(newTree as NodeType);
+                        hashNode(newTree);
+                        newTree = smartSimplify(newTree);
+                        newTree = removeSingles(newTree);
+                        newTree = orderNode(newTree as NodeType);
+                        hashNode(newTree);
+                        console.log('step', printNode(newTree));
+                    }
+                    lastHash = undefined;
+                    newTree = orderNode(newTree as NodeType);
+                    hashNode(newTree);
+                    // Do basic simplification
+                    while (lastHash !== newTree?.hash) {
+                        lastHash = newTree?.hash;
+                        newTree = applyAssociative(newTree as NodeType);
+                        newTree = removeIdentities(newTree as NodeType);
+                        newTree = applyNumerical(newTree as NodeType);
+                        newTree = powerSimplify(newTree as NodeType);
+                        newTree = orderNode(newTree as NodeType);
+                        hashNode(newTree);
+                    }
 
-                if (newTree) {
-                    store.dispatch(updateTree([newTree], parser.getRuleNames()));
+                    if (newTree) {
+                        store.dispatch(updateTree([newTree], parser.getRuleNames()));
+                    }
+                    return { output: 'Result: ' + printNode(newTree as NodeType) };
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
             }
