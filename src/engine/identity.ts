@@ -72,9 +72,10 @@ function removeIdentitiesProduct(node: ASTProductNode) {
             return new ASTNumberNode(0);
         }
     }
+
     if (node.children.length === 0) {
-        return new ASTNumberNode(1);
-    } else if (node.children.length === 1) {
+        return new ASTNumberNode(0);
+    } else  if (node.children.length === 1) {
         return node.children[0] as NodeType;
     } else {
         return node;
@@ -100,6 +101,6 @@ function removeIdentitiesPower(node: ASTPowerNode) {
         }
     }
     // }
-
+    
     return node;
 }

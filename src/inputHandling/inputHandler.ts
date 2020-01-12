@@ -1,13 +1,16 @@
 import _ from 'lodash';
 import { applyAssociative } from '../engine/assocative';
 import { removeBrackets } from '../engine/brackets';
+import { differentiate } from '../engine/differentiate';
+import { endPrint } from '../engine/finalPrint';
 import { hashNode } from '../engine/hashing';
 import { removeIdentities } from '../engine/identity';
 import { likeTerms } from '../engine/likeTerms';
 import { applyNumerical } from '../engine/numerical';
 import { orderNode } from '../engine/ordering';
 import { powerSimplify } from '../engine/power';
-import { printNode } from '../engine/printing';
+import { powerToProduct } from '../engine/powerToProduct';
+import { prettyPrintNode, printNode } from '../engine/printing';
 import { removeSingles } from '../engine/removeSingles';
 import { NodeType, simplifyInput } from '../engine/simplification';
 import { smartSimplify } from '../engine/smartSimplify';
@@ -47,6 +50,18 @@ export function execute(input: string): { output: string, error?: string } | und
             } catch (err) {
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
             }
+        case '/d': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = differentiate(tree.tree[0] as NodeType);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
         case '/simplify': {
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
@@ -54,7 +69,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Simplified to: ' + printNode(newTree as NodeType) };
+                return { output: 'Simplified to: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to simplify` };
             }
@@ -66,7 +81,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -78,7 +93,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -90,7 +105,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -102,7 +117,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -114,7 +129,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if ((isUndefined(check.tree[0] as NodeType) as NodeType).type === ASTType.null) {
                     return { output: 'Result: the expression is undefined' };
                 }
-                return { output: 'Result: ' + printNode(tree.tree[0] as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(tree.tree[0] as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -126,7 +141,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -138,7 +153,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -150,7 +165,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -180,7 +195,7 @@ export function execute(input: string): { output: string, error?: string } | und
                             root = applyNumerical(root as NodeType);
                         }
                     }
-                    return { output: 'Result: ' + printNode(root as NodeType) };
+                    return { output: 'Result: ' + prettyPrintNode(root as NodeType) };
                 } else {
                     return { output: '', error: `Nothing to apply rule to` };
                 }
@@ -229,7 +244,7 @@ export function execute(input: string): { output: string, error?: string } | und
                     if (newTree) {
                         store.dispatch(updateTree([_.cloneDeep(newTree)], parser.getRuleNames()));
                     }
-                    return { output: 'Result: ' + printNode(newTree as NodeType) };
+                    return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
                 } else {
                     return { output: '', error: `Nothing to apply rule to` };
                 }
@@ -244,7 +259,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree as NodeType) };
+                return { output: 'Result: ' + prettyPrintNode(newTree as NodeType) };
             } else {
                 return { output: '', error: `Nothing to apply rule to` };
             }
@@ -267,6 +282,42 @@ export function execute(input: string): { output: string, error?: string } | und
             const tree = _.cloneDeep(getTree(store.getState()));
             testModel(i);
             return { output: 'Tested model ' + i };
+        }
+        case '/model3': {
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
+                const tree = _.cloneDeep(store.dispatch(updateTree(parser.getTree(), parser.getRuleNames())));
+                if (tree) {
+                    const newTree = simplifyInput(tree.tree[0] as NodeType);
+                    if (newTree) {
+                        store.dispatch(updateTree([newTree], tree.ruleNames));
+                    }
+                    const derivativeTree = differentiate(newTree as NodeType);
+                    let root = _.cloneDeep(derivativeTree);
+                    const check = _.cloneDeep(derivativeTree);
+                    for (let i = 0; i < 100; i++) {
+                        if (check && (isUndefined(check) as NodeType).type === ASTType.null) {
+                            return { output: 'Result: the expression is undefined' };
+                        }
+                        if (root) {
+                            root = applyAssociative(root as NodeType);
+                            root = removeIdentities(root as NodeType);
+                            root = powerSimplify(root as NodeType);
+                            root = removeBrackets(root as NodeType);
+                            root = likeTerms(root as NodeType);
+                            root = applyNumerical(root as NodeType);
+
+                        }
+                    }
+                    root = endPrint(root as NodeType);
+                    return { output: 'Result: ' + prettyPrintNode(root as NodeType) };
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
+                }
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
         }
         default:
             return { output: '', error: `Command '${tokens[0]}' not recognized` };
