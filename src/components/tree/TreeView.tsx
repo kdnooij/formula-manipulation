@@ -3,7 +3,7 @@ import { hierarchy } from 'd3-hierarchy';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
-import { printNode } from '../../engine/printing';
+import { prettyPrintNode, printNode } from '../../engine/printing';
 import { NodeType } from '../../engine/simplification';
 import { FileContext } from '../../parsing/generated/ExpressionParser';
 import { ASTNode } from '../../parsing/nodes/node';
@@ -37,7 +37,7 @@ class TreeView extends React.Component<Props> {
                     />
                     {this.props.tree ? (
                         <span className="StringView">
-                            {printNode(this.props.tree.tree[0] as NodeType)}
+                            {prettyPrintNode(this.props.tree.tree[0] as NodeType)}
                         </span>
                     ) : null}
                 </Container>
