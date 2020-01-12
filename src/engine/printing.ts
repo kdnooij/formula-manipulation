@@ -1,9 +1,6 @@
 import { ASTNode, ASTType } from '../parsing/nodes/node';
 import { ASTNumberNode } from '../parsing/nodes/numberNode';
-<<<<<<< Updated upstream
-=======
 import { ASTVariableNode } from '../parsing/nodes/variableNode';
->>>>>>> Stashed changes
 import { NodeType } from './simplification';
 
 export function printNode(node?: NodeType): string {
@@ -116,9 +113,6 @@ export function checkNodeType(node: NodeType) {
             return true;
         }
     return false;
-<<<<<<< Updated upstream
-}
-=======
 } 
 /*
 export function printNode(node?: NodeType): string {
@@ -165,4 +159,3 @@ export function printNode(node?: NodeType): string {
     }
 }
 */
->>>>>>> Stashed changes
