@@ -22,7 +22,7 @@ export function smartSimplify(node: NodeType): NodeType {
             ret = smartSimplifySummation(node);
             break;
         case ASTType.product:
-            ret =  smartSimplifyProduct(node);
+            ret = smartSimplifyProduct(node);
             break;
         default:
             ret = node;
@@ -54,7 +54,16 @@ function smartSimplifySummation(node: ASTSummationNode): NodeType {
     }
     const children: ASTNode[] = [];
     map.forEach((pair) => {
-        children.push(new ASTProductNode([pair.mul, pair.node]));
+        if (pair.mul.children.length === 1) {
+            if ((pair.mul.children[0] as NodeType).type === ASTType.number &&
+                (pair.mul.children[0] as ASTNumberNode).value === 1) {
+                children.push(pair.node);
+            } else {
+                children.push(new ASTProductNode([pair.mul.children[0], pair.node]));
+            }
+        } else {
+            children.push(new ASTProductNode([pair.mul, pair.node]));
+        }
     });
     return new ASTSummationNode(children);
 }
@@ -79,7 +88,12 @@ function smartSimplifyProduct(node: ASTProductNode): NodeType {
     const children: ASTNode[] = [];
     map.forEach((pair) => {
         if (pair.exp.children.length === 1) {
-            children.push(new ASTPowerNode([pair.node, pair.exp.children[0]]));
+            if ((pair.exp.children[0] as NodeType).type === ASTType.number &&
+                (pair.exp.children[0] as ASTNumberNode).value === 1) {
+                children.push(pair.node);
+            } else {
+                children.push(new ASTPowerNode([pair.node, pair.exp.children[0]]));
+            }
         } else {
             children.push(new ASTPowerNode([pair.node, pair.exp]));
         }
