@@ -55,7 +55,7 @@ function sortLexi(a: ASTVariableNode, b: ASTVariableNode): number {
 function sortSubTrees(a: NodeType, b: NodeType): number {
     if (a.type === ASTType.summation && b.type === ASTType.summation ||
         a.type === ASTType.product && b.type === ASTType.product) {
-        return sortOnFirst(a, b);
+        return sortOnLast(a, b);
     }
     if (a.type === ASTType.power && b.type === ASTType.power) {
         return sortPowers(a, b);
@@ -67,22 +67,27 @@ function sortSubTrees(a: NodeType, b: NodeType): number {
         return -1;
     }
     if (a.type === ASTType.product) {
+        return sortOnLast(a, new ASTProductNode([b]));
         return 1;
     }
     if (b.type === ASTType.product) {
+        return sortOnLast(new ASTProductNode([a]), b);
+        /* if (b.children[b.children.length - 1].type === ASTType.power) {
+            return sortPowers(a as ASTPowerNode, b.children[b.children.length - 1] as ASTPowerNode);
+        } */
         return -1;
     }
     throw new Error('Fault in sorting algorithm');
 }
 
-function sortOnFirst(a: ASTSummationNode | ASTProductNode, b: ASTSummationNode | ASTProductNode): number {
-    let res = sortNode(a.children[0], b.children[0]);
+function sortOnLast(a: ASTSummationNode | ASTProductNode, b: ASTSummationNode | ASTProductNode): number {
+    let res = sortNode(a.children[a.children.length - 1], b.children[b.children.length - 1]);
     let i = 1;
     while (res === 0) {
         if (i < a.children.length && i < b.children.length) {
             res = sortNode(
-                a.children[i],
-                b.children[i]
+                a.children[a.children.length - i],
+                b.children[b.children.length - i]
             );
         } else {
             return a.children.length < b.children.length ?

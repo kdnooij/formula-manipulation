@@ -28,6 +28,7 @@ export function smartSimplify(node: NodeType): NodeType {
             ret = node;
             break;
     }
+    ret = removeSingles(ret);
     ret = orderNode(ret);
     hashNode(ret);
     return ret;

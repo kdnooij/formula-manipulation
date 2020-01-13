@@ -14,6 +14,7 @@ import { prettyPrintNode, printNode } from '../engine/printing';
 import { removeSingles } from '../engine/removeSingles';
 import { simplifyInput } from '../engine/simplification';
 import { smartSimplify } from '../engine/smartSimplify';
+import { toPolynomial } from '../engine/toPolynomial';
 import { isUndefined } from '../engine/undefined';
 import { ParserError } from '../parsing/errorListener';
 import { ASTNode, ASTType, NodeType } from '../parsing/nodes/node';
@@ -252,6 +253,84 @@ export function execute(input: string): { output: string, error?: string } | und
                 return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
             }
         }
+        case '/model2*': {
+            try {
+                const variable = tokens[1];
+                const parser = new Parser(tokens.slice(2).join(' '));
+                let newTree = simplifyInput(parser.getTree()[0]);
+                if (newTree) {
+                    newTree = orderNode(newTree);
+                    hashNode(newTree);
+                    let lastHash;
+                    // Do smart simplification
+                    while (lastHash !== newTree?.hash) {
+                        const check = _.cloneDeep(newTree);
+                        if (check && isUndefined(check).type === ASTType.null) {
+                            return { output: 'Result: the expression is undefined' };
+                        }
+                        lastHash = newTree?.hash;
+                        newTree = applyAssociative(newTree);
+                        newTree = removeIdentities(newTree);
+                        newTree = applyNumerical(newTree);
+                        newTree = powerSimplify(newTree);
+                        const res = toPolynomial(newTree, variable);
+                        if (res.flag === 'nonpoly') {
+                            return { output: '', error: 'Could not convert to polynomial' };
+                        }
+                        newTree = res.node;
+                        newTree = smartSimplify(newTree);
+                        newTree = removeSingles(newTree);
+                        newTree = orderNode(newTree);
+                        hashNode(newTree);
+                    }
+                    lastHash = undefined;
+                    newTree = orderNode(newTree);
+                    hashNode(newTree);
+                    // Do basic simplification
+                    while (lastHash !== newTree?.hash) {
+                        lastHash = newTree?.hash;
+                        newTree = applyAssociative(newTree);
+                        newTree = removeIdentities(newTree);
+                        newTree = applyNumerical(newTree);
+                        newTree = powerSimplify(newTree);
+                        newTree = orderNode(newTree);
+                        hashNode(newTree);
+                    }
+
+                    if (newTree) {
+                        store.dispatch(updateTree([_.cloneDeep(newTree)], parser.getRuleNames()));
+                    }
+                    return { output: 'Result: ' + prettyPrintNode(newTree) };
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
+                }
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
+        case '/poly': {
+            const variable = tokens.slice(1).join(' ');
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const res = toPolynomial(tree.tree[0], variable);
+                switch (res.flag) {
+                    case 'constant':
+                        store.dispatch(updateTree([res.node], tree.ruleNames));
+                        return { output: 'Reduced to constant: ' + prettyPrintNode(res.node) };
+                    case 'term':
+                        store.dispatch(updateTree([res.node], tree.ruleNames));
+                        return { output: 'Reduced to single term: ' + prettyPrintNode(res.node) };
+                    case 'poly':
+                        store.dispatch(updateTree([res.node], tree.ruleNames));
+                        return { output: 'Converted to polynomial: ' + prettyPrintNode(res.node) };
+                    case 'nonpoly':
+                    default:
+                        return { output: '', error: 'Could not convert to polynomial' };
+                }
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
         case '/smart': {
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
@@ -278,7 +357,7 @@ export function execute(input: string): { output: string, error?: string } | und
             }
         }
         case '/test': {
-            const i = parseInt(tokens.slice(1).join(' '), 10);
+            const i = tokens.slice(1).join(' ');
             const tree = _.cloneDeep(getTree(store.getState()));
             testModel(i);
             return { output: 'Tested model ' + i };
@@ -313,6 +392,56 @@ export function execute(input: string): { output: string, error?: string } | und
                         return { output: 'Result: ' + prettyPrintNode(root) };
                     }
                     return { output: '', error: `Nothing to apply rule to` };
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
+                }
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
+        case '/model3*': {
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                const newTree = simplifyInput(parser.getTree()[0]);
+                if (newTree) {
+                    let derivativeTree = differentiate(newTree);
+                    derivativeTree = orderNode(derivativeTree);
+                    hashNode(derivativeTree);
+                    let lastHash;
+                    // Do smart simplification
+                    while (lastHash !== derivativeTree?.hash) {
+                        const check = _.cloneDeep(derivativeTree);
+                        if (check && isUndefined(check).type === ASTType.null) {
+                            return { output: 'Result: the expression is undefined' };
+                        }
+                        lastHash = derivativeTree?.hash;
+                        derivativeTree = applyAssociative(derivativeTree);
+                        derivativeTree = removeIdentities(derivativeTree);
+                        derivativeTree = applyNumerical(derivativeTree);
+                        derivativeTree = powerSimplify(derivativeTree);
+                        derivativeTree = smartSimplify(derivativeTree);
+                        derivativeTree = removeSingles(derivativeTree);
+                        derivativeTree = orderNode(derivativeTree);
+                        hashNode(derivativeTree);
+                    }
+                    lastHash = undefined;
+                    derivativeTree = orderNode(derivativeTree);
+                    hashNode(derivativeTree);
+                    // Do basic simplification
+                    while (lastHash !== derivativeTree?.hash) {
+                        lastHash = derivativeTree?.hash;
+                        derivativeTree = applyAssociative(derivativeTree);
+                        derivativeTree = removeIdentities(derivativeTree);
+                        derivativeTree = applyNumerical(derivativeTree);
+                        derivativeTree = powerSimplify(derivativeTree);
+                        derivativeTree = orderNode(derivativeTree);
+                        hashNode(derivativeTree);
+                    }
+
+                    if (derivativeTree) {
+                        store.dispatch(updateTree([_.cloneDeep(derivativeTree)], parser.getRuleNames()));
+                    }
+                    return { output: 'Result: ' + prettyPrintNode(derivativeTree) };
                 } else {
                     return { output: '', error: `Nothing to apply rule to` };
                 }

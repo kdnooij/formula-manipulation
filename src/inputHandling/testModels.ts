@@ -3,7 +3,7 @@ import { LogLine } from '../stores/console/state';
 import store from '../stores/store';
 import { execute } from './inputHandler';
 
-export function testModel(i: number) {
+export function testModel(i: string) {
     const tests = [
         { test: 'x*(x^2+x+1)', expected: 'x+x^2+x^3' },
         { test: '4*x^2+x+2*x^2+0', expected: 'x+6*x^2' },
