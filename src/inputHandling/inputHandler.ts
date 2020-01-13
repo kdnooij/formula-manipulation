@@ -5,6 +5,7 @@ import { differentiate } from '../engine/differentiate';
 import { endPrint } from '../engine/finalPrint';
 import { hashNode } from '../engine/hashing';
 import { removeIdentities } from '../engine/identity';
+import { integrate } from '../engine/integrate';
 import { likeTerms } from '../engine/likeTerms';
 import { applyNumerical } from '../engine/numerical';
 import { orderNode } from '../engine/ordering';
@@ -163,6 +164,30 @@ export function execute(input: string): { output: string, error?: string } | und
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
                 const newTree = likeTerms(tree.tree[0]);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + prettyPrintNode(newTree) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/powRed': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = powerToProduct(tree.tree[0]);
+                if (newTree) {
+                    store.dispatch(updateTree([newTree], tree.ruleNames));
+                }
+                return { output: 'Result: ' + prettyPrintNode(newTree) };
+            } else {
+                return { output: '', error: `Nothing to apply rule to` };
+            }
+        }
+        case '/int': {
+            const tree = _.cloneDeep(getTree(store.getState()));
+            if (tree) {
+                const newTree = integrate(tree.tree[0]);
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
@@ -331,6 +356,41 @@ export function execute(input: string): { output: string, error?: string } | und
                 return { output: '', error: `Nothing to apply rule to` };
             }
         }
+        case '/model4': {
+            try {
+                const parser = new Parser(tokens.slice(1).join(' '));
+                store.dispatch(updateTree(parser.getTree(), parser.getRuleNames()));
+                const tree = _.cloneDeep(store.dispatch(updateTree(parser.getTree(), parser.getRuleNames())));
+                if (tree) {
+                    const newTree = simplifyInput(tree.tree[0]);
+                    if (newTree) {
+                        const flat = applyAssociative(newTree);
+                        const integratedTree = integrate(flat);
+                        let root = _.cloneDeep(integratedTree);
+                        for (let i = 0; i < 100; i++) {
+                            if (root) {
+                                root = applyAssociative(root);
+                                root = removeIdentities(root);
+                                root = powerSimplify(root);
+                                root = removeBrackets(root);
+                                root = likeTerms(root);
+                                root = applyNumerical(root);
+
+                            }
+                        }
+                        root = endPrint(root);
+                        store.dispatch(updateTree([root], tree.ruleNames));
+                        return { output: 'Result: ' + prettyPrintNode(root) };
+                    } else {
+                        return { output: '', error: `Nothing to apply rule to` };
+                    }
+                } else {
+                    return { output: '', error: `Nothing to apply rule to` };
+                }
+            } catch (err) {
+                return { output: '', error: err.map((e: ParserError) => e.message).join('\n') };
+            }
+        }
         case '/smart': {
             const tree = _.cloneDeep(getTree(store.getState()));
             if (tree) {
@@ -351,7 +411,7 @@ export function execute(input: string): { output: string, error?: string } | und
                 if (newTree) {
                     store.dispatch(updateTree([newTree], tree.ruleNames));
                 }
-                return { output: 'Result: ' + printNode(newTree) };
+                return { output: 'Result: ' + prettyPrintNode(newTree) };
             } else {
                 return { output: '', error: `Nothing to apply hashing to` };
             }
