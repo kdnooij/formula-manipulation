@@ -40,12 +40,13 @@ function smartSimplifySummation(node: ASTSummationNode): NodeType {
         let c: NodeType = new ASTNumberNode(1);
         let n: NodeType = _.cloneDeep(x);
         if ((x).type === ASTType.product) {
-            if (((x as ASTProductNode).children[0]).type === ASTType.number) {
-                c = _.cloneDeep((x as ASTProductNode).children[0]);
-                n = new ASTProductNode((n as ASTProductNode).children.slice(1));
-                n = removeSingles(n);
-                hashNode(n);
-            }
+            c = new ASTProductNode(_.cloneDeep(x.children.slice(0, x.children.length - 1)));
+            n = x.children[x.children.length - 1];
+            c = removeSingles(c);
+            n = removeSingles(n);
+            hashNode(c);
+            hashNode(n);
+
         }
         if (map.has(n.hash!)) {
             const val = map.get(n.hash!);

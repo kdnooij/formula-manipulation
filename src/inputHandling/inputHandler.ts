@@ -308,9 +308,32 @@ export function execute(input: string): { output: string, error?: string } | und
                         newTree = orderNode(newTree);
                         hashNode(newTree);
                     }
+
                     lastHash = undefined;
                     newTree = orderNode(newTree);
                     hashNode(newTree);
+
+                    // Do smart simplification
+                    while (lastHash !== newTree?.hash) {
+                        const check = _.cloneDeep(newTree);
+                        if (check && isUndefined(check).type === ASTType.null) {
+                            return { output: 'Result: the expression is undefined' };
+                        }
+                        lastHash = newTree?.hash;
+                        newTree = applyAssociative(newTree);
+                        newTree = removeIdentities(newTree);
+                        newTree = applyNumerical(newTree);
+                        newTree = powerSimplify(newTree);
+                        newTree = smartSimplify(newTree);
+                        newTree = removeSingles(newTree);
+                        newTree = orderNode(newTree);
+                        hashNode(newTree);
+                    }
+
+                    lastHash = undefined;
+                    newTree = orderNode(newTree);
+                    hashNode(newTree);
+                    
                     // Do basic simplification
                     while (lastHash !== newTree?.hash) {
                         lastHash = newTree?.hash;
